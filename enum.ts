@@ -1,0 +1,32 @@
+export enum QuestionType {
+  MULTIPLE_CHOICE = "MULTIPLE_CHOICE",
+  FILL_IN_THE_BLANK = "FILL_IN_THE_BLANK",
+  PASSAGE = "PASSAGE",
+  MATCH = "MATCH",
+  REORDER = "REORDER",
+  DRAG_AND_DROP = "DRAG_AND_DROP",
+  DROP_DOWN = "DROP_DOWN",
+  HOTSPOT = "HOTSPOT",
+  LABELING = "LABELING",
+  CATEGORIZE = "CATEGORIZE",
+  DRAW = "DRAW",
+  OPEN_ENDED = "OPEN_ENDED",
+  VIDEO_RESPONSE = "VIDEO_RESPONSE",
+  AUDIO_RESPONSE = "AUDIO_RESPONSE",
+  POLL = "POLL",
+  WORD_CLOUD = "WORD_CLOUD",
+  MATH_RESPONSE = "MATH_RESPONSE",
+  GRAPHING = "GRAPHING",
+}
+
+export enum DifficultyLevel {
+  EASY = "easy",
+  MEDIUM = "medium",
+  HARD = "hard",
+}
+
+export enum GraphType {
+  LINE = "line",
+  BAR = "bar",
+  SCATTER = "scatter",
+}
