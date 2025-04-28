@@ -1,5 +1,5 @@
-import { QuestionType, DifficultyLevel, GraphType } from "./enums";
-import { AnswerValue, OptionValue, LocalizedText } from "./types";
+import { QuestionType, DifficultyLevel, GraphType, AnswerType } from "./enum";
+import { AnswerValue, OptionValue, LocalizedText } from "./type";
 
 // Result Type for Error Handling
 export interface IResult {
@@ -35,6 +35,7 @@ export interface IAnswer {
 export interface IQuestion<T extends AnswerValue> {
   id: string;
   type: QuestionType;
+  answerType: AnswerType;
   text: LocalizedText;
   options?: IOption[];
   correctAnswer: IAnswer;
@@ -54,11 +55,14 @@ export interface IQuizState {
   currentQuestionIndex: number;
   score: number;
   userAnswers: Map<string, IAnswer>;
-  questions: IQuestion<any>[]; // Keep as a fallback for small quizzes
+  questions: IQuestion<AnswerValue>[];
   questionLoader?: {
     totalQuestions: number;
-    loadQuestions(startIndex: number, count: number): Promise<IQuestion<any>[]>;
-  }; // Async loader for large quizzes
+    loadQuestions(
+      startIndex: number,
+      count: number
+    ): Promise<IQuestion<AnswerValue>[]>;
+  };
   isCompleted: boolean;
   startTime: Date;
   endTime?: Date;
@@ -78,7 +82,7 @@ export interface IQuizGame {
   previousQuestion(): IResult;
   calculateScore(): number;
   endQuiz(): IResult;
-  getCurrentQuestion(): IQuestion<any> | null;
+  getCurrentQuestion(): IQuestion<AnswerValue> | null;
   pauseQuiz(): IResult;
   resumeQuiz(): IResult;
   shuffleQuestions(): IResult;
@@ -98,15 +102,14 @@ export interface IFillInTheBlankQuestion
   correctAnswer: IAnswer;
 }
 
-// For Passage, we use a dummy AnswerValue since answers are stored in subQuestions
-export interface IPassageQuestion
+export interface IReadingComprehensionQuestion
   extends IQuestion<{ type: "text"; value: string }> {
   passage: LocalizedText;
-  subQuestions: IQuestion<any>[];
-  correctAnswer: IAnswer; // Dummy answer, correctness determined by subQuestions
+  subQuestions: IQuestion<AnswerValue>[];
+  correctAnswer: IAnswer;
 }
 
-export interface IMatchQuestion
+export interface IMatchingQuestion
   extends IQuestion<{
     type: "array-match";
     value: Array<{ left: string; right: string }>;
@@ -137,14 +140,14 @@ export interface IDropDownQuestion
   correctAnswer: IAnswer;
 }
 
-export interface IHotspotQuestion
+export interface IImageHotspotQuestion
   extends IQuestion<{ type: "coordinates"; value: { x: number; y: number } }> {
   imageUrl: string;
   hotspots: IOption[];
   correctAnswer: IAnswer;
 }
 
-export interface ILabelingQuestion
+export interface IImageTaggingQuestion
   extends IQuestion<{
     type: "array-labeling";
     value: Array<{ labelId: string; position: { x: number; y: number } }>;
@@ -154,7 +157,7 @@ export interface ILabelingQuestion
   correctAnswer: IAnswer;
 }
 
-export interface ICategorizeQuestion
+export interface IClassifyQuestion
   extends IQuestion<{
     type: "array-categorize";
     value: Array<{ itemId: string; categoryId: string }>;
@@ -164,48 +167,19 @@ export interface ICategorizeQuestion
   correctAnswer: IAnswer;
 }
 
-export interface IDrawQuestion
-  extends IQuestion<{ type: "canvas"; value: string }> {
-  correctAnswer: IAnswer;
-}
-
-export interface IOpenEndedQuestion
-  extends IQuestion<{ type: "text"; value: string }> {
-  maxLength: number;
-  correctAnswer: IAnswer;
-}
-
-export interface IVideoResponseQuestion
-  extends IQuestion<{ type: "media"; value: string }> {
-  maxDuration: number; // in seconds
-  correctAnswer: IAnswer;
-}
-
-export interface IAudioResponseQuestion
-  extends IQuestion<{ type: "media"; value: string }> {
-  maxDuration: number; // in seconds
-  correctAnswer: IAnswer;
-}
-
-export interface IPollQuestion
+export interface ISurveyQuestion
   extends IQuestion<{ type: "text"; value: string }> {
   options: IOption[];
   correctAnswer: IAnswer;
 }
 
-export interface IWordCloudQuestion
-  extends IQuestion<{ type: "array-word-cloud"; value: string[] }> {
-  maxWords: number;
-  correctAnswer: IAnswer;
-}
-
-export interface IMathResponseQuestion
+export interface IMathInputQuestion
   extends IQuestion<{ type: "text"; value: string }> {
   equation: LocalizedText;
   correctAnswer: IAnswer;
 }
 
-export interface IGraphingQuestion
+export interface IGraphPlottingQuestion
   extends IQuestion<{
     type: "array-graphing";
     value: Array<{ x: number; y: number }>;
